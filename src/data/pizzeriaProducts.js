@@ -18,6 +18,30 @@ export const pizzas = [
     price: 6200,
     img: "/images/pizzas/pizza-napo.png",
   },
+  {
+    id: "pizza-fugazzeta",
+    name: "Fugazzeta",
+    category: "Pizzas",
+    description: "Cebolla caramelizada, muzza y orégano.",
+    price: 6000,
+    img:"/images/pizzas/fugazeta.jpg",
+  },
+   {
+    id: "pizza-calabresa",
+    name: "Calabresa",
+    category: "Pizzas",
+    description: "Muzza, longaniza calabresa y aceitunas.",
+    price: 6800,
+    img:"/images/pizzas/calabresa.png", 
+  },
+    {
+    id: "pizza-cuatro quesos",
+    name: "Cuatro Quesos",
+    category: "Pizzas",
+    description: "Muzza, roquefort, parmesano y provolone.",
+    price: 7200,
+    img:"/images/pizzas/4quesos.avif",
+  },
   // agregás más pizzas...
 ];
 
@@ -38,6 +62,30 @@ export const empanadas = [
     description: "Jamón cocido y muzza.",
     price: 900,
     img: "/images/empanadas/empanada-jyq.png",
+  },
+   {
+    id: "emp-pollo",
+    name: "Empanada de Pollo",
+    category: "Empanadas",
+    description: "Pollo trozado y condimentos.",
+    price: 900,
+    img: "/images/empanadas/empanadapollo.jpg",
+  },
+   {
+    id: "emp-atun",
+    name: "Empanada de Atun",
+    category: "Empanadas",
+    description: "Atun condimentos.",
+    price: 900,
+    img: "/images/empanadas/atun.png",
+  },
+    {
+    id: "emp-cyq",
+    name: "Empanada de Cebolla y Queso",
+    category: "Empanadas",
+    description: "Cebolla y Queso.",
+    price: 900,
+    img: "/images/empanadas/cyq.jpg",
   },
 ];
 
