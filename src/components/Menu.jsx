@@ -4,10 +4,10 @@ import { pizzas, empanadas, bebidas, postres } from "../data/pizzeriaProducts";
 
 export default function Menu({ onAddToCart, isClosed }) {
   const categories = [
-    { id: "pizzas", label: "Pizzas", products: pizzas },
-    { id: "empanadas", label: "Empanadas", products: empanadas },
-    { id: "bebidas", label: "Bebidas", products: bebidas },
-    { id: "postres", label: "Postres", products: postres },
+    { id: "pizzas", label: "Pizzas 🍕", products: pizzas },
+    { id: "empanadas", label: "Empanadas 🥟", products: empanadas },
+    { id: "bebidas", label: "Bebidas 🥤", products: bebidas },
+    { id: "postres", label: "Postres 🍦", products: postres },
   ];
 
   // categoría abierta en MOBILE
