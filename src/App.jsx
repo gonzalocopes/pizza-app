@@ -188,7 +188,7 @@ function App() {
       </footer>
 
       {/* 🧱 Separador solo mobile para que la barra roja no tape el footer */}
-      <div className="d-md-none" style={{ height: "64px" }} />
+      <div className="d-lg-none" style={{ height: "64px" }} />
 
       {/* Modal de sugerencias */}
       <UpsellModal
