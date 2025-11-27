@@ -96,7 +96,7 @@ export default function UpsellModal({
               className="btn btn-secondary"
               onClick={onClose}
             >
-              Seguir sin agregar
+              Seguir
             </button>
           </div>
         </div>
