@@ -11,7 +11,7 @@ export default function Menu({ onAddToCart, isClosed }) {
   ];
 
   // categoría abierta en MOBILE
-  const [openCategory, setOpenCategory] = useState("pizzas");
+  const [openCategory, setOpenCategory] = useState("null");
 
   // refs para hacer scroll suave a la categoría abierta
   const categoryRefs = useRef({});
