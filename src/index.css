@@ -290,3 +290,25 @@ button:focus-visible {
   border-color: rgba(255, 255, 255, 0.7) !important;
   color: #fff !important;
 }
+
+
+
+/* Scroll interno para la lista del Upsell */
+.upsell-scroll-area {
+  max-height: 300px;       /* altura fija cómoda en mobile */
+  overflow-y: auto;        /* habilita scroll */
+  padding-right: 4px;      /* espacio para evitar que tape el scroll */
+}
+
+.upsell-scroll-area::-webkit-scrollbar {
+  width: 6px;
+}
+
+.upsell-scroll-area::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.upsell-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}

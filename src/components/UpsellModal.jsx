@@ -46,7 +46,7 @@ export default function UpsellModal({
           </div>
 
           {/* BODY */}
-          <div className="modal-body">
+          <div className="modal-body upsell-scroll-area">
             <p className="small text-muted mb-3">
               Ya agregaste <strong>{productName}</strong>. Te dejamos algunas
               sugerencias para acompañar:
@@ -56,13 +56,13 @@ export default function UpsellModal({
               <p>No hay productos sugeridos.</p>
             ) : (
               <ul className="list-group">
-                {upsellItems.slice(0, 4).map((item) => {
-                  const isAdded = addedIds.includes(item.id);
-                  return (
-                    <li
-                      key={item.id}
-                      className="list-group-item d-flex justify-content-between align-items-center"
-                    >
+                {upsellItems.map((item) => {
+  const isAdded = addedIds.includes(item.id);
+  return (
+    <li
+      key={item.id}
+      className="list-group-item d-flex justify-content-between align-items-center"
+    >
                       <div>
                         <div className="fw-semibold">{item.name}</div>
                         <small className="text-muted">${item.price}</small>
