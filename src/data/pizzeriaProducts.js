@@ -141,7 +141,7 @@ export const extrasPizza = [
   },
   {
     id: "extra-jamon",
-    name: "Jamón 🐖",
+    name: "Extra Jamón 🐖",
     price: 1200,
     category: "Extras",
   },
@@ -153,35 +153,25 @@ export const extrasPizza = [
   },
   {
     id: "albahaca-fresca",
-    name: "Albahaca fresca 🌿",
+    name: "Extra Albahaca fresca 🌿",
     price: 500,
     category: "Extras",
   },{
     id: "anchoas",
-    name: "Anchoas 🍤 ",
+    name: "Extra Anchoas 🍤 ",
     price: 1500,
     category: "Extras",
   },{
-    id: "borde-relleno",
-    name: "Borde relleno",
+    id: "huevo",
+    name: "Extra Huevo 🍳",
     price: 1500,
     category: "Extras",
   },{
-    id: "borde-relleno",
-    name: "Borde relleno",
+    id: "cebolla",
+    name: "Extra Cebolla 🧅",
     price: 1500,
     category: "Extras",
-  },{
-    id: "borde-relleno",
-    name: "Borde relleno",
-    price: 1500,
-    category: "Extras",
-  },{
-    id: "borde-relleno",
-    name: "Borde relleno",
-    price: 1500,
-    category: "Extras",
-  },
+  }
 
 ];
 
