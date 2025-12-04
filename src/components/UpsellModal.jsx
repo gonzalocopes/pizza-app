@@ -215,7 +215,7 @@ export default function UpsellModal({
             )}
           </div>
 
-          {/* FOOTER */}
+          {/* FOOTER asd*/}
           <div className="modal-footer">
             <button
               type="button"
