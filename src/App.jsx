@@ -183,7 +183,7 @@ function App() {
           © {new Date().getFullYear()}{" "}
           Desarrollado por{" "}
           <a
-            href="https://gopedidos-psi.vercel.app/#"
+            href="https://magozitsolutions.netlify.app/gopedidos"
             target="_blank"
             rel="noopener noreferrer"
             className="text-decoration-none text-info"
