@@ -3,7 +3,7 @@ export const clientConfig = {
   nombre: "Tu Marca",          // Nombre del local
   tipo: "pizzeria",                     // pizzeria | hamburgueseria | heladeria | etc.
 
-  whatsapp: "5491136424020",           // Teléfono sdel negocio (formato internacional)
+  whatsapp: "5491136424020",           // Teléfono tdel negocio (formato internacional)
 
   logo: "/images/logo_tumarca.png",    // Ruta dentro de /public (ej: public/images/logo-pizzeria.png)
 
