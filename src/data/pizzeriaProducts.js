@@ -301,7 +301,7 @@ export const milanesas = [
     name: "Sandwich de Milanesa",
     description: "Clásica milanesa de carne en Sandwich.",
     price: 9000,
-    img: "/images/mila/",
+    img: "/images/mila/sandwich_milanesa.png",
   }, {
     id: "mila-plato",
     name: "Milanesas con Papas Fritas",
@@ -363,7 +363,7 @@ export const milanesas = [
     name: "Sanwich de Milanesa",
     description: "Milanesa de carne, Jamon y Queso",
     price: 13000,
-    img: "/images/mila/",
+    img: "/images/mila/sandwich_milanesa.png",
   }, {
     id: "sand-mila-completo",
     name: "Sanwich de Milanesa Completo",
