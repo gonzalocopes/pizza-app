@@ -1,230 +1,166 @@
 // src/components/UpsellModal.jsx
-import { useState, useEffect } from "react";
-import { empanadas } from "../data/pizzeriaProducts";
+import { useEffect, useMemo, useState } from "react";
 
 export default function UpsellModal({
   show,
   onClose,
-  upsellItems,
-  onAdd,
-  onRemoveOne,   // 👈 NUEVO: para restar 1 del carrito
+  mode = "extras", // "extras" | "mitad" | "pack"
   lastProduct,
+  upsellItems = [],
+  empanadaFlavors = [],
+  requiredCount = 0,
+  onToggleExtra,
+  activeLine, // 👈 la pizza actual del carrito (con extras)
+  onConfirmEmpanadaPack,
 }) {
-  const [addedIds, setAddedIds] = useState([]); // para extras normales (pizzas)
-  const [selectionCount, setSelectionCount] = useState(0); // total en pack
-  const [flavorCounts, setFlavorCounts] = useState({}); // cantidad por sabor en pack
+  // packs empanadas
+  const [counts, setCounts] = useState({});
 
   useEffect(() => {
-    if (show) {
-      setAddedIds([]);
-      setSelectionCount(0);
-      setFlavorCounts({});
-    }
-  }, [show]);
+    if (show) setCounts({});
+  }, [show, mode]);
+
+  const totalSelected = useMemo(
+    () => Object.values(counts).reduce((a, b) => a + (b || 0), 0),
+    [counts]
+  );
+
+  const inc = (id) => {
+    if (totalSelected >= requiredCount) return;
+    setCounts((p) => ({ ...p, [id]: (p[id] || 0) + 1 }));
+  };
+
+  const dec = (id) => {
+    setCounts((p) => ({
+      ...p,
+      [id]: Math.max((p[id] || 0) - 1, 0),
+    }));
+  };
 
   if (!show) return null;
 
-  const productName = lastProduct?.name || "tu pedido";
-  const category = lastProduct?.category || "";
-  const nameLower = productName.toLowerCase();
-
-  const isEmpanadaMedia =
-    category === "Empanadas" && nameLower.includes("media docena");
-
-  const isEmpanadaDocena =
-    category === "Empanadas" &&
-    nameLower.includes("docena") &&
-    !nameLower.includes("media docena");
-
-  const isEmpanadaPack = isEmpanadaMedia || isEmpanadaDocena;
-  const maxSelection = isEmpanadaMedia ? 6 : isEmpanadaDocena ? 12 : null;
-
-  const isPizza = category === "Pizzas";
-  const icon = isEmpanadaPack ? "🥟" : isPizza ? "🍕" : "🥟";
-
-  const currentCount = isEmpanadaPack ? selectionCount : addedIds.length;
-  const reachedLimit =
-    maxSelection !== null && currentCount >= maxSelection;
-
-  // Para packs de empanadas mostramos las empanadas individuales (sin las de pack)
-  const individualEmpanadas = empanadas.filter((e) => !e.upsell);
-  const itemsToShow = isEmpanadaPack ? individualEmpanadas : upsellItems;
+  const selectedExtras = new Set((activeLine?.extras || []).map((e) => e.id));
 
   return (
-    <div
-      className="modal fade show d-block"
-      tabIndex="-1"
-      style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-    >
-      <div className="modal-dialog modal-dialog-centered">
+    <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,.6)" }}>
+      <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div className="modal-content">
-          {/* HEADER */}
+
           <div className="modal-header">
             <h5 className="modal-title">
-              {isEmpanadaPack
-                ? "Elegí tus empanadas 🥟"
-                : `¿Le sumamos algo a tu pedido? ${icon}`}
+              {mode === "pack" ? `Elegí ${requiredCount} empanadas` : "Extras / Preparación"}
             </h5>
-            <button
-              type="button"
-              className="btn-close"
-              onClick={onClose}
-              aria-label="Cerrar"
-            ></button>
+            <button className="btn-close" onClick={onClose}></button>
           </div>
 
-          {/* BODY */}
-          <div className="modal-body upsell-scroll-area">
-            {isEmpanadaPack ? (
+          <div className="modal-body">
+
+            {/* PACK EMPANADAS */}
+            {mode === "pack" && (
               <>
-                <p className="small text-muted mb-1">
-                  Estás armando <strong>{productName}</strong>.
-                </p>
-                <p className="small text-muted mb-3">
-                  Elegí hasta{" "}
-                  <strong>{maxSelection} empanadas</strong>. No vas a poder
-                  agregar más de ese número.
-                  <br />
-                  Seleccionaste{" "}
-                  <strong>
-                    {currentCount} de {maxSelection}
-                  </strong>
-                  .
-                </p>
-              </>
-            ) : (
-              <p className="small text-muted mb-3">
-                Te dejamos algunas sugerencias para acompañar:
-              </p>
-            )}
+                <p className="fw-semibold mb-1">{lastProduct?.name}</p>
+                <small className="text-muted">
+                  Seleccionadas: {totalSelected}/{requiredCount}
+                </small>
 
-            {itemsToShow.length === 0 ? (
-              <p>No hay productos sugeridos.</p>
-            ) : (
-              <ul className="list-group">
-                {itemsToShow.map((item) => {
-                  if (isEmpanadaPack) {
-                    // 🥟 LÓGICA PARA PACKS DE EMPANADAS (media/docena)
-                    const packIdSuffix = isEmpanadaMedia
-                      ? "-pack-media"
-                      : "-pack-docena";
-                    const flavorKey = item.id + packIdSuffix;
-                    const flavorQty = flavorCounts[flavorKey] || 0;
-                    const canDecrease = flavorQty > 0;
-                    const canIncrease = !reachedLimit;
-
+                <div className="mt-3">
+                  {empanadaFlavors.map((e) => {
+                    const qty = counts[e.id] || 0;
                     return (
-                      <li
-                        key={flavorKey}
-                        className="list-group-item d-flex justify-content-between align-items-center"
+                      <div
+                        key={e.id}
+                        className="d-flex justify-content-between align-items-center border rounded p-2 mb-2"
                       >
                         <div>
-                          <div className="fw-semibold">{item.name}</div>
-                          <small className="text-muted">
-                            Cantidad: {flavorQty}
-                          </small>
+                          <strong>{e.name}</strong>
+                          <div className="text-muted small">{e.description}</div>
                         </div>
-                        <div className="d-flex gap-2">
-                          {/* BOTÓN - */}
+
+                        <div className="d-flex align-items-center gap-2">
                           <button
-                            type="button"
-                            className="btn btn-sm btn-outline-danger"
-                            disabled={!canDecrease}
-                            onClick={() => {
-                              if (!canDecrease) return;
-                              // avisar al padre para sacar 1 del carrito
-                              if (onRemoveOne) {
-                                onRemoveOne(flavorKey);
-                              }
-                              setSelectionCount((prev) =>
-                                prev > 0 ? prev - 1 : 0
-                              );
-                              setFlavorCounts((prev) => ({
-                                ...prev,
-                                [flavorKey]:
-                                  (prev[flavorKey] || 0) > 0
-                                    ? prev[flavorKey] - 1
-                                    : 0,
-                              }));
-                            }}
+                            className="btn btn-outline-danger btn-sm"
+                            onClick={() => dec(e.id)}
+                            disabled={qty === 0}
                           >
                             −
                           </button>
-
-                          {/* BOTÓN + */}
+                          <span className="fw-bold">{qty}</span>
                           <button
-                            type="button"
-                            className="btn btn-sm btn-success"
-                            disabled={!canIncrease}
-                            onClick={() => {
-                              if (reachedLimit) return;
-
-                              // Entra al carrito como item 0$ con ID especial
-                              onAdd({
-                                ...item,
-                                id: flavorKey,
-                                price: 0,
-                              });
-
-                              setSelectionCount((prev) => prev + 1);
-                              setFlavorCounts((prev) => ({
-                                ...prev,
-                                [flavorKey]: (prev[flavorKey] || 0) + 1,
-                              }));
-                            }}
+                            className="btn btn-outline-success btn-sm"
+                            onClick={() => inc(e.id)}
+                            disabled={totalSelected >= requiredCount}
                           >
                             +
                           </button>
                         </div>
-                      </li>
+                      </div>
                     );
-                  }
+                  })}
+                </div>
+              </>
+            )}
 
-                  // 🍕 LÓGICA PARA EXTRAS DE PIZZA (una sola vez por ítem)
-                  const isAdded = addedIds.includes(item.id);
-                  const disabled = isAdded;
+            {/* EXTRAS / MITAD */}
+            {mode !== "pack" && (
+              <>
+                <p className="fw-semibold mb-2">Para: {lastProduct?.name}</p>
+
+                {upsellItems.map((item) => {
+                  const isSelected = selectedExtras.has(item.id);
 
                   return (
-                    <li
+                    <button
                       key={item.id}
-                      className="list-group-item d-flex justify-content-between align-items-center"
+                      type="button"
+                      onClick={() => onToggleExtra(item)}
+                      className={`w-100 d-flex justify-content-between align-items-center border rounded p-2 mb-2 ${isSelected ? "btn btn-success" : "btn btn-outline-secondary"
+                        }`}
                     >
-                      <div>
-                        <div className="fw-semibold">{item.name}</div>
-                        <small className="text-muted">${item.price}</small>
+                      <div className="text-start">
+                        <strong>{item.name}</strong>
+                        {item.price > 0 && (
+                          <div className="small">+ ${item.price}</div>
+                        )}
                       </div>
-                      <button
-                        className={
-                          "btn btn-sm " +
-                          (isAdded ? "btn-outline-success" : "btn-success")
-                        }
-                        disabled={disabled}
-                        onClick={() => {
-                          if (!isAdded) {
-                            onAdd(item);
-                            setAddedIds((prev) => [...prev, item.id]);
-                          }
-                        }}
-                      >
-                        {isAdded ? "Agregado ✓" : "Agregar"}
-                      </button>
-                    </li>
+
+                      <div className="fw-bold">
+                        {isSelected ? "✓ Seleccionado" : "Seleccionar"}
+                      </div>
+                    </button>
                   );
                 })}
-              </ul>
+              </>
             )}
           </div>
 
-          {/* FOOTER asd*/}
           <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={onClose}
-            >
-              Seguir
-            </button>
+            {mode === "pack" ? (
+              <button
+                className="btn btn-success w-100"
+                disabled={totalSelected !== requiredCount}
+                onClick={() => onConfirmEmpanadaPack(counts)}
+              >
+                Confirmar
+              </button>
+            ) : (
+              // 🔔 Lógica para obligar a elegir Molde o Piedra
+              (() => {
+                const PREP_IDS = ["al-molde", "ala-piedra", "al-molde-mitad", "ala-piedra-mitad"];
+                const hasPrep = PREP_IDS.some((id) => selectedExtras.has(id));
+
+                return (
+                  <button
+                    className={`btn w-100 ${hasPrep ? "btn-success" : "btn-secondary"}`}
+                    onClick={onClose}
+                    disabled={!hasPrep}
+                  >
+                    {hasPrep ? "Listo" : "Seleccioná: Al Molde o A la Piedra"}
+                  </button>
+                );
+              })()
+            )}
           </div>
+
         </div>
       </div>
     </div>

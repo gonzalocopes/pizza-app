@@ -181,7 +181,7 @@ button:focus-visible {
 }
 
 .menu-category-collapse.show {
-  max-height: 1000px;
+  max-height: 5000px; /* 🔥 antes 1000px, ahora entran todas las pizzas */
   opacity: 1;
 }
 
@@ -290,8 +290,6 @@ button:focus-visible {
   border-color: rgba(255, 255, 255, 0.7) !important;
   color: #fff !important;
 }
-
-
 
 /* Scroll interno para la lista del Upsell */
 .upsell-scroll-area {

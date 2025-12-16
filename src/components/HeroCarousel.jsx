@@ -4,10 +4,14 @@ import { clientConfig } from "../config/clientConfig";
 export default function HeroCarousel() {
   const { hero, nombre } = clientConfig;
 
-  // Imagen de fondo: si no hay en config, usamos la de Pexels
-  const imageSrc =
+  // Imagen de fondo fallback
+  const fallbackImage =
     hero?.fondo ||
     "https://images.pexels.com/photos/825661/pexels-photo-825661.jpeg";
+
+  const img1 = hero?.heroImages?.[0] || fallbackImage;
+  const img2 = hero?.heroImages?.[1] || fallbackImage;
+  const img3 = hero?.heroImages?.[2] || fallbackImage;
 
   // Textos con fallback: si no hay en config, usamos los que ya tenías
   const slide1Title = hero?.slides?.[0]?.titulo || `${nombre} 🍕`;
@@ -37,7 +41,7 @@ export default function HeroCarousel() {
             {/* Slide 1 */}
             <div className="carousel-item active">
               <img
-                src={imageSrc}
+                src={img1}
                 className="d-block w-100"
                 alt="Slide 1"
                 style={{ maxHeight: "520px", objectFit: "cover" }}
@@ -53,7 +57,7 @@ export default function HeroCarousel() {
             {/* Slide 2 */}
             <div className="carousel-item">
               <img
-                src={imageSrc}
+                src={img2}
                 className="d-block w-100"
                 alt="Slide 2"
                 style={{ maxHeight: "520px", objectFit: "cover" }}
@@ -69,7 +73,7 @@ export default function HeroCarousel() {
             {/* Slide 3 */}
             <div className="carousel-item">
               <img
-                src={imageSrc}
+                src={img3}
                 className="d-block w-100"
                 alt="Slide 3"
                 style={{ maxHeight: "520px", objectFit: "cover" }}

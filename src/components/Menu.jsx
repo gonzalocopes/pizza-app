@@ -1,12 +1,19 @@
 // src/components/Menu.jsx
 import { useState, useRef } from "react";
-import { pizzas, empanadas, bebidas, postres } from "../data/pizzeriaProducts";
+import {
+  pizzas,
+  empanadas,
+  postres,
+  milanesas,
+  promos, // 👈 IMPORTANTE: importamos promos
+} from "../data/pizzeriaProducts";
 
 export default function Menu({ onAddToCart, isClosed }) {
   const categories = [
     { id: "pizzas", label: "Pizzas 🍕", products: pizzas },
     { id: "empanadas", label: "Empanadas 🥟", products: empanadas },
-    { id: "bebidas", label: "Bebidas 🥤", products: bebidas },
+    { id: "milanesas", label: "Milanesas 🥩🍟", products: milanesas },
+    { id: "promos", label: "Promos 💸💸", products: promos },
     { id: "postres", label: "Postres 🍦", products: postres },
   ];
 
@@ -36,6 +43,54 @@ export default function Menu({ onAddToCart, isClosed }) {
 
       return next;
     });
+  };
+
+  // 🪄 Animación de volar al carrito
+  const triggerFlyAnimation = (e, imgUrl) => {
+    // Solo animar si existe el widget mobile (si no está, no animamos)
+    const cartWidget = document.getElementById("mobile-cart-widget");
+    if (!cartWidget) return;
+
+    // Coordenadas inicio (botón clickeado o el mismo evento)
+    const startRect = e.target.getBoundingClientRect();
+    const startX = startRect.left + startRect.width / 2;
+    const startY = startRect.top + startRect.height / 2;
+
+    // Coordenadas fin (widget carrito mobile)
+    const endRect = cartWidget.getBoundingClientRect();
+    const endX = endRect.left + endRect.width / 2;
+    const endY = endRect.top + endRect.height / 2;
+
+    // Crear elemento volador (clon visual)
+    const flyer = document.createElement("img");
+    flyer.src = imgUrl;
+    flyer.style.position = "fixed";
+    flyer.style.left = `${startX}px`;
+    flyer.style.top = `${startY}px`;
+    flyer.style.width = "50px";
+    flyer.style.height = "50px";
+    flyer.style.borderRadius = "50%";
+    flyer.style.objectFit = "cover";
+    flyer.style.zIndex = "9999";
+    flyer.style.pointerEvents = "none";
+    flyer.style.transition = "all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)"; // Efecto "rápido al inicio, suave al final"
+    flyer.style.transform = "translate(-50%, -50%) scale(1)";
+    flyer.style.boxShadow = "0 4px 10px rgba(0,0,0,0.3)";
+
+    document.body.appendChild(flyer);
+
+    // Forzar reflow y activar la transición
+    requestAnimationFrame(() => {
+      flyer.style.left = `${endX}px`;
+      flyer.style.top = `${endY}px`;
+      flyer.style.transform = "translate(-50%, -50%) scale(0.2)"; // Se achica al llegar
+      flyer.style.opacity = "0.7";
+    });
+
+    // Limpieza al terminar
+    setTimeout(() => {
+      if (flyer.parentNode) flyer.parentNode.removeChild(flyer);
+    }, 600);
   };
 
   const renderProductCard = (item) => (
@@ -72,7 +127,10 @@ export default function Menu({ onAddToCart, isClosed }) {
               <button
                 className="btn btn-success btn-sm"
                 disabled={isClosed}
-                onClick={() => onAddToCart(item)}
+                onClick={(e) => {
+                  triggerFlyAnimation(e, item.img);
+                  onAddToCart(item);
+                }}
               >
                 {isClosed ? "Cerrado" : "Agregar"}
               </button>
@@ -86,7 +144,7 @@ export default function Menu({ onAddToCart, isClosed }) {
   return (
     <section id="menu" className="py-4 bg-light">
       <div className="container-fluid px-3 px-lg-4">
-        <h2 className="mb-3 text-center">Menú</h2>
+        <h2 className="mb-3 text-center text-dark">Menú</h2>
 
         {/* === LISTA DE CATEGORÍAS (ESTILO APP) – SOLO MOBILE === */}
         <div className="d-md-none mb-3 menu-category-strip">
@@ -97,18 +155,17 @@ export default function Menu({ onAddToCart, isClosed }) {
                 key={cat.id}
                 type="button"
                 onClick={() => handleToggleCategory(cat.id)}
-                className={`menu-category-pill ${
-                  isActive ? "menu-category-pill-active" : ""
-                }`}
+                className={`menu-category-pill ${isActive ? "menu-category-pill-active" : ""
+                  }`}
               >
                 <span className="flex-grow-1 text-start">
-                  <span className="d-block fw-semibold">{cat.label}</span>
+                  <span className="d-block fw-semibold text-dark">{cat.label}</span>
                   <small className="text-muted">
                     {cat.products.length} producto
                     {cat.products.length !== 1 ? "s" : ""}
                   </small>
                 </span>
-                <span className="menu-cat-icon">
+                <span className="menu-cat-icon text-dark">
                   {isActive ? "−" : "+"}
                 </span>
               </button>
@@ -128,7 +185,7 @@ export default function Menu({ onAddToCart, isClosed }) {
             >
               {/* Título de categoría (solo desktop) */}
               <div className="d-none d-md-flex align-items-baseline mb-2">
-                <h4 className="me-2 mb-0">{cat.label}</h4>
+                <h4 className="me-2 mb-0 text-dark">{cat.label}</h4>
                 <small className="text-muted">
                   {cat.products.length} producto
                   {cat.products.length !== 1 ? "s" : ""}
@@ -137,9 +194,8 @@ export default function Menu({ onAddToCart, isClosed }) {
 
               {/* MOBILE: contenedor con animación de apertura/cierre */}
               <div
-                className={`d-md-none menu-category-collapse ${
-                  isOpenMobile ? "show" : ""
-                }`}
+                className={`d-md-none menu-category-collapse ${isOpenMobile ? "show" : ""
+                  }`}
               >
                 {cat.products.map((item) => renderProductCard(item))}
               </div>
